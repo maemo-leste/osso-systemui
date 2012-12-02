@@ -138,5 +138,27 @@ typedef enum
 	TKLOCK_STATUS_CLOSED
 } tklock_status;
 
+#ifdef DEBUG
+
+#define SYSTEMUI_DEBUG(msg, ...) \
+  syslog(LOG_MAKEPRI(LOG_USER, LOG_DEBUG), "%s:%d:" msg "\n", __func__, __LINE__, ##__VA_ARGS__)
+#define DEBUG_FN SYSTEMUI_DEBUG("")
+
+#else
+  #define SYSTEMUI_DEBUG(msg, ...)
+
+#endif
+
+#define SYSTEMUI_DEBUG_FN SYSTEMUI_DEBUG("")
+
+#define SYSTEMUI_ERROR(msg, ...) \
+  syslog(LOG_MAKEPRI(LOG_USER, LOG_ERR), "%s:%d:" msg "\n", __func__, __LINE__, ##__VA_ARGS__)
+
+#define SYSTEMUI_WARNING(msg, ...) \
+  syslog(LOG_MAKEPRI(LOG_USER, LOG_WARNING), "%s:%d:" msg "\n", __func__, __LINE__, ##__VA_ARGS__)
+
+#define SYSTEMUI_NOTICE(msg, ...) \
+  syslog(LOG_MAKEPRI(LOG_USER, LOG_NOTICE), "%s:%d:" msg "\n", __func__, __LINE__, ##__VA_ARGS__)
+
 
 #endif /* __SYSTEMUI_H_INCLUDED__ */
