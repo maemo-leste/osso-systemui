@@ -1,0 +1,11 @@
+prefix=/usr
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include/systemui
+
+Name: osso-systemui
+Description: Header files for osso-systemui
+Requires: dbus-1 glib-2.0 gtk+-2.0 
+Version: 0.2
+Libs:
+Cflags: -I${includedir}

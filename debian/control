@@ -1,0 +1,13 @@
+Source: osso-systemui-dev
+Priority: optional
+Maintainer: Ivaylo Dimitrov <freemangordon@abv.bg>
+Build-Depends: debhelper (>> 3.0.0), autotools-dev
+Standards-Version: 3.7.2
+Section: libs
+
+Package: osso-systemui-dev
+Section: libs
+Architecture: all
+Depends:  libosso-dev, libdbus-1-dev,
+ libglib2.0-dev, libgtk2.0-dev
+Description: Header files for linking to the closed-source osso-systemui binary
