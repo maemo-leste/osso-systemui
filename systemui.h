@@ -1,3 +1,24 @@
+/**
+  Copyright (C) 2011 Jonathan Wilson
+  Copyright (C) 2012 Ivaylo Dimitrov <freemangordon@abv.bg>
+
+  Contact: Jonathan Wilson <jfwfreo@tpgi.com.au>
+
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public License
+  version 2.1 as published by the Free Software Foundation.
+
+  This library is distributed in the hope that it will be useful, but
+  WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+  02110-1301 USA
+*/
+
 #ifndef __SYSTEMUI_H_INCLUDED__
 #define __SYSTEMUI_H_INCLUDED__
 
@@ -142,8 +163,6 @@ typedef enum
 
 #define SYSTEMUI_DEBUG(msg, ...) \
   syslog(LOG_MAKEPRI(LOG_USER, LOG_DEBUG), "%s:%d:" msg "\n", __func__, __LINE__, ##__VA_ARGS__)
-#define DEBUG_FN SYSTEMUI_DEBUG("")
-
 #else
   #define SYSTEMUI_DEBUG(msg, ...)
 
