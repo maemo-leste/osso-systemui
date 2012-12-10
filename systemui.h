@@ -36,11 +36,11 @@ typedef struct
 	GConfClient *gc_client;
 	DBusError dbuserror;
 	GMainLoop *mainloop;
-	DBusConnection *session_bus;
+	DBusConnection *system_bus;
 	GtkIconTheme *icontheme;
 	int unk1;
 	GHashTable *hashtable;
-	DBusConnection *system_bus;
+	int unk2;
 } system_ui_data;
 
 typedef struct

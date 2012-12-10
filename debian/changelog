@@ -1,3 +1,9 @@
+osso-systemui-dev (0.3) unstable; urgency=low
+
+  * Fix DBus connection member.
+
+ -- Ivaylo Dimitrov <freemangordon@abv.bg>  Sun, 10 Dec 2012 17:46:12 +0200
+
 osso-systemui-dev (0.2) unstable; urgency=low
 
   * Initial Release.
