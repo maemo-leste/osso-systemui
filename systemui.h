@@ -135,30 +135,6 @@ remove_handler(char *name, system_ui_data *data);
 void plugin_close(system_ui_data *data);
 gboolean plugin_init(system_ui_data *data);
 
-#define SYSTEMUI_TKLOCK_OPEN_REQ       "tklock_open"
-#define SYSTEMUI_TKLOCK_CLOSE_REQ      "tklock_close"
-#define TKLOCK_SIGNAL_IF		"com.nokia.tklock.signal"
-#define TKLOCK_SIGNAL_PATH		"/com/nokia/tklock/signal"
-#define TKLOCK_MM_KEY_PRESS_SIG         "mm_key_press"
-typedef enum
-{
-	TKLOCK_MODE_NONE,
-	TKLOCK_MODE_ENABLE,
-	TKLOCK_MODE_HELP,
-	TKLOCK_MODE_SELECT,
-	TKLOCK_MODE_ONEINPUT,
-	TKLOCK_MODE_ENABLE_VISUAL
-} tklock_mode;
-
-typedef enum
-{
-	TKLOCK_STATUS_NONE,
-	TKLOCK_STATUS_UNLOCK,
-	TKLOCK_STATUS_RETRY,
-	TKLOCK_STATUS_TIMEOUT,
-	TKLOCK_STATUS_CLOSED
-} tklock_status;
-
 #ifdef DEBUG
 
 #define SYSTEMUI_DEBUG(msg, ...) \
