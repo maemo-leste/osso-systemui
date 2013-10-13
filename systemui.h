@@ -86,7 +86,7 @@ extern void nsv_sv_init(void*);
 extern void nsv_sv_shutdown(void*);
 
 /* returns event_id */
-extern guint nsv_sv_play_event(void*, guint type);
+extern guint nsv_sv_play_event(void*, guint type, const gchar* sound_file, guint, const gchar* vibra_pattern, guint, guint volume);
 extern void nsv_sv_stop_event(void*, guint event_id);
 
 extern void WindowPriority_HideWindow(GtkWidget*);
