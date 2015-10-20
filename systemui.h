@@ -115,6 +115,8 @@ do_callback(system_ui_data *data, system_ui_callback_t *callback, guint argc);
 
 extern void
 systemui_free_callback(system_ui_callback_t *callback);
+extern void
+free_callback(system_ui_callback_t *callback);
 
 extern void
 ipm_hide_window(GtkWidget *widget);
