@@ -1,3 +1,9 @@
+osso-systemui-dev (0.5) unstable; urgency=low
+
+  * Add some missing functions
+
+ -- Jonathan Wilson <jfwfreo@tpgi.com.au>  Fri, 23 Oct 2015 03:03:23 -0400
+
 osso-systemui-dev (0.4) unstable; urgency=low
 
   * Fix nsv_sv_play_event parameters.
