@@ -38,7 +38,7 @@ typedef struct
 	GMainLoop *mainloop;
 	DBusConnection *system_bus;
 	GtkIconTheme *icontheme;
-	int unk1;
+	GtkWindow *unkwindow;
 	GHashTable *hashtable;
 	int unk2;
 } system_ui_data;

@@ -1,3 +1,9 @@
+osso-systemui-dev (0.6) unstable; urgency=low
+
+  * Further fixes
+
+ -- Jonathan Wilson <jfwfreo@tpgi.com.au>  Sat, 24 Oct 2015 18:01:15 -0400
+
 osso-systemui-dev (0.5) unstable; urgency=low
 
   * Add some missing functions
