@@ -119,9 +119,9 @@ extern void
 free_callback(system_ui_callback_t *callback);
 
 extern void
-ipm_hide_window(GtkWidget *window);
+ipm_hide_window(GtkWindow *window);
 extern void
-ipm_show_window(GtkWidget *window, unsigned int priority);
+ipm_show_window(GtkWindow *window, unsigned int priority);
 
 extern int
 systemui_add_handler(const char *name, system_ui_handler handler, system_ui_data *data);
