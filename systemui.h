@@ -89,8 +89,8 @@ extern void nsv_sv_shutdown(void*);
 extern guint nsv_sv_play_event(void*, guint type, const gchar* sound_file, guint, const gchar* vibra_pattern, guint, guint volume);
 extern void nsv_sv_stop_event(void*, guint event_id);
 
-extern void WindowPriority_HideWindow(GtkWidget*);
-extern gboolean WindowPriority_ShowWindow(GtkWidget*, int priority);
+extern void WindowPriority_HideWindow(GtkWindow*);
+extern gboolean WindowPriority_ShowWindow(GtkWindow*, int priority);
 
 typedef int (*system_ui_handler)(const char *interface,
                                    const char *method,
@@ -119,9 +119,9 @@ extern void
 free_callback(system_ui_callback_t *callback);
 
 extern void
-ipm_hide_window(GtkWidget *widget);
+ipm_hide_window(GtkWidget *window);
 extern void
-ipm_show_window(GtkWidget *widget, unsigned int priority);
+ipm_show_window(GtkWidget *window, unsigned int priority);
 
 extern int
 systemui_add_handler(const char *name, system_ui_handler handler, system_ui_data *data);

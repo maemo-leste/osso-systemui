@@ -1,8 +1,9 @@
 osso-systemui-dev (0.6) unstable; urgency=low
 
   * Further fixes
+  * Update parameters for window hide/show functions
 
- -- Jonathan Wilson <jfwfreo@tpgi.com.au>  Sat, 24 Oct 2015 18:01:15 -0400
+ -- Jonathan Wilson <jfwfreo@tpgi.com.au>  Sat, 24 Oct 2015 23:33:05 -0400
 
 osso-systemui-dev (0.5) unstable; urgency=low
 
