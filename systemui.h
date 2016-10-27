@@ -86,21 +86,23 @@ extern void nsv_sv_init(void*);
 extern void nsv_sv_shutdown(void*);
 
 /* returns event_id */
-extern guint nsv_sv_play_event(void*, guint type, const gchar* sound_file, guint, const gchar* vibra_pattern, guint, guint volume);
+extern guint nsv_sv_play_event(void*, guint type, const gchar* sound_file,
+                               guint, const gchar* vibra_pattern, guint,
+                               guint volume);
 extern void nsv_sv_stop_event(void*, guint event_id);
 
-extern void WindowPriority_HideWindow(GtkWindow*);
-extern gboolean WindowPriority_ShowWindow(GtkWindow*, int priority);
+extern gboolean WindowPriority_HideWindow(GtkWidget *);
+extern gboolean WindowPriority_ShowWindow(GtkWidget *, unsigned int priority);
 
 typedef int (*system_ui_handler)(const char *interface,
                                    const char *method,
                                    GArray *args /* array of system_ui_callback_arg */,
-                                   system_ui_data *data,
+                                   system_ui_data *ui,
                                    system_ui_handler_arg *result);
 
-extern int
+extern gboolean
 systemui_check_plugin_arguments(GArray *args, int *supportedargs, guint argc);
-extern int
+extern gboolean
 check_plugin_arguments(GArray *args, int *supportedargs, guint argc);
 
 extern int
@@ -109,33 +111,33 @@ extern int
 check_set_callback(GArray *args, system_ui_callback_t *callback);
 
 extern void
-systemui_do_callback(system_ui_data *data, system_ui_callback_t *callback, guint argc);
+systemui_do_callback(system_ui_data *data, system_ui_callback_t *callback,
+                     guint argc);
 extern void
-do_callback(system_ui_data *data, system_ui_callback_t *callback, guint argc);
+do_callback(system_ui_data *ui, system_ui_callback_t *callback, guint argc);
 
 extern void
 systemui_free_callback(system_ui_callback_t *callback);
-extern void
-free_callback(system_ui_callback_t *callback);
 
-extern void
-ipm_hide_window(GtkWindow *window);
-extern void
-ipm_show_window(GtkWindow *window, unsigned int priority);
+extern gboolean
+ipm_hide_window(GtkWidget *widget);
+extern gboolean
+ipm_show_window(GtkWidget *widget, unsigned int priority);
 
-extern int
-systemui_add_handler(const char *name, system_ui_handler handler, system_ui_data *data);
-extern void
-add_handler(const char *name, system_ui_handler handler, system_ui_data *data);
+extern gboolean
+systemui_add_handler(const char *name, system_ui_handler handler,
+                     system_ui_data *ui);
+extern gboolean
+add_handler(const char *name, system_ui_handler handler, system_ui_data *ui);
 
 
-extern void
-systemui_remove_handler(char *name, system_ui_data *data);
-extern void
-remove_handler(char *name, system_ui_data *data);
+extern gboolean
+systemui_remove_handler(const char *name, system_ui_data *ui);
+extern gboolean
+remove_handler(const char *name, system_ui_data *ui);
 
-void plugin_close(system_ui_data *data);
-gboolean plugin_init(system_ui_data *data);
+void plugin_close(system_ui_data *ui);
+gboolean plugin_init(system_ui_data *ui);
 
 #ifdef DEBUG
 
@@ -148,6 +150,9 @@ gboolean plugin_init(system_ui_data *data);
 
 #define SYSTEMUI_DEBUG_FN SYSTEMUI_DEBUG("")
 
+#define SYSTEMUI_CRITICAL(msg, ...) \
+  syslog(LOG_MAKEPRI(LOG_USER, LOG_CRIT), "%s:%d:" msg "\n", __func__, __LINE__, ##__VA_ARGS__)
+
 #define SYSTEMUI_ERROR(msg, ...) \
   syslog(LOG_MAKEPRI(LOG_USER, LOG_ERR), "%s:%d:" msg "\n", __func__, __LINE__, ##__VA_ARGS__)
 
@@ -157,5 +162,7 @@ gboolean plugin_init(system_ui_data *data);
 #define SYSTEMUI_NOTICE(msg, ...) \
   syslog(LOG_MAKEPRI(LOG_USER, LOG_NOTICE), "%s:%d:" msg "\n", __func__, __LINE__, ##__VA_ARGS__)
 
+#define SYSTEMUI_INFO(msg, ...) \
+  syslog(LOG_MAKEPRI(LOG_USER, LOG_INFO), "%s:%d:" msg "\n", __func__, __LINE__, ##__VA_ARGS__)
 
 #endif /* __SYSTEMUI_H_INCLUDED__ */
