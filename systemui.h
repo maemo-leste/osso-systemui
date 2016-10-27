@@ -22,25 +22,25 @@
 #ifndef __SYSTEMUI_H_INCLUDED__
 #define __SYSTEMUI_H_INCLUDED__
 
+#include <gtk/gtk.h>
 #include <dbus/dbus.h>
 #include <gconf/gconf-client.h>
+#include <syslog.h>
 
 typedef struct
 {
-	GTree *handlers;
-	char *requestinterface;
-	char *signalinterface;
-	char *requestpath;
-	char *signalpath;
-	char *bus_name;
-	GConfClient *gc_client;
-	DBusError dbuserror;
-	GMainLoop *mainloop;
-	DBusConnection *system_bus;
-	GtkIconTheme *icontheme;
-	GtkWindow *unkwindow;
-	GHashTable *hashtable;
-	int unk2;
+  GTree *handlers;
+  char *requestinterface;
+  char *signalinterface;
+  char *requestpath;
+  char *signalpath;
+  char *bus_name;
+  GConfClient *gc_client;
+  DBusError dbuserror;
+  GMainLoop *mainloop;
+  DBusConnection *system_bus;
+  GtkIconTheme *icontheme;
+  GHashTable *hsl_tab;
 } system_ui_data;
 
 typedef struct
