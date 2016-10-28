@@ -1,30 +1,6 @@
-osso-systemui-dev (0.6) unstable; urgency=low
+osso-systemui (0.2.0.19) unstable; urgency=low
 
-  * Further fixes
-  * Update parameters for window hide/show functions
+  * Initial RE version.
 
- -- Jonathan Wilson <jfwfreo@tpgi.com.au>  Sat, 24 Oct 2015 23:33:05 -0400
+ -- Ivaylo Dimitrov <freemangordon@abv.bg>  Thu, 27 Oct 2016 17:29:31 +0200
 
-osso-systemui-dev (0.5) unstable; urgency=low
-
-  * Add some missing functions
-
- -- Jonathan Wilson <jfwfreo@tpgi.com.au>  Fri, 23 Oct 2015 03:03:23 -0400
-
-osso-systemui-dev (0.4) unstable; urgency=low
-
-  * Fix nsv_sv_play_event parameters.
-
- -- Ivaylo Dimitrov <freemangordon@abv.bg>  Sun, 13 Oct 2013 11:38:53 +0200
-
-osso-systemui-dev (0.3) unstable; urgency=low
-
-  * Fix DBus connection member.
-
- -- Ivaylo Dimitrov <freemangordon@abv.bg>  Sun, 10 Dec 2012 17:46:12 +0200
-
-osso-systemui-dev (0.2) unstable; urgency=low
-
-  * Initial Release.
-
- -- Ivaylo Dimitrov <freemangordon@abv.bg>  Sun, 02 Dec 2012 08:30:21 +0200

@@ -1,0 +1,10 @@
+#! /bin/sh
+
+# Kill systemui if locale is changed by SUW
+if [ "${LOCALE_SET_BY_SUW}" = "yes" ]; then
+	DAEMON=/usr/bin/systemui
+	DSMETOOL=/usr/sbin/dsmetool
+	DSMETOOL_KILL_PARAMETERS="-k"
+
+	$DSMETOOL $DSMETOOL_KILL_PARAMETERS $DAEMON
+fi

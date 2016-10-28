@@ -1,13 +1,26 @@
-Source: osso-systemui-dev
+Source: osso-systemui
 Priority: optional
 Maintainer: Ivaylo Dimitrov <freemangordon@abv.bg>
-Build-Depends: debhelper (>> 3.0.0), autotools-dev
+Build-Depends: debhelper (>> 3.0.0), autotools-dev, libhildon1-dev, libgconf2-dev, osso-systemui-dbus-dev, libosso-dev, libx11-dev, libdbus-1-dev, libdbus-glib-1-dev
 Standards-Version: 3.7.2
 Section: libs
 
+Package: osso-systemui
+Section: misc
+Architecture: any
+Depends:  hildon-initscripts (>= 0.8.10), osso-af-startup (>= 0.17), passwd
+Conflicts: osso-systemui-actingdead (<= 0.0.3.7), osso-systemui-alarm (<= 0.0.3.4), osso-systemui-devlock (<= 0.0.4.6), osso-systemui-powerkeymenu (<= 0.0.3.4), osso-systemui-splashscreen (<= 0.0.4.2), osso-systemui-tklock (<< 0.1.6.7)
+Description:System UI
+ This package contains the system ui
+
 Package: osso-systemui-dev
-Section: libs
-Architecture: all
-Depends:  libosso-dev, libdbus-1-dev,
- libglib2.0-dev, libgtk2.0-dev
-Description: Header files for linking to the closed-source osso-systemui binary
+Section: devel
+Architecture: any
+Depends:  libdbus-1-dev, libgtk2.0-dev
+Description: Header files for System UI
+
+Package: osso-systemui-dbg
+Section: devel
+Architecture: any
+Depends:  osso-systemui (=${Source-Version})
+Description: Debug symbols for osso-systemui

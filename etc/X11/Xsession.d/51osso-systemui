@@ -1,0 +1,10 @@
+#! /bin/sh
+
+# Might be starting or restarting, depends on SUW thing
+if [ "${LOCALE_SET_BY_SUW}" = "yes" ]; then
+	DAEMON=/usr/bin/systemui
+	DSMETOOL=/usr/sbin/dsmetool
+	DSMETOOL_PARAMETERS="-n -1 -t"
+
+	$DSMETOOL $DSMETOOL_PARAMETERS $DAEMON
+fi

@@ -9,33 +9,47 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
+DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
+DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
 
-
-
-CFLAGS = -Wall -g
+CFLAGS = -Wall -g -Werror
+PACKAGENAME = osso-systemui
 
 ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
 	CFLAGS += -O0
 else
 	CFLAGS += -O2
 endif
+ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
+	INSTALL_PROGRAM += -s
+endif
+
+ifneq (,$(findstring thumb,$(DEB_BUILD_OPTIONS)))
+        CFLAGS += -mthumb
+endif
+
+ifneq (,$(findstring debug,$(DEB_BUILD_OPTIONS)))
+	conf_opt += --enable-debug
+endif
+
+config.status: configure
+	dh_testdir
+	# commands to configure the package.
+	if [ ! -x configure ]; then ./autogen.sh; fi
+	CFLAGS="$(CFLAGS)" ./configure --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --sysconfdir=/etc --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info $(conf_opt)
 
 configure: configure-stamp
 configure-stamp:
 	dh_testdir
-	# Add here commands to configure the package.
-
+	./autogen.sh
 	touch configure-stamp
 
-
 build: build-stamp
-
-build-stamp: configure-stamp 
+build-stamp:  config.status
 	dh_testdir
 
 	# Add here commands to compile the package.
 	$(MAKE)
-
 	touch build-stamp
 
 clean:
@@ -44,18 +58,19 @@ clean:
 	rm -f build-stamp configure-stamp
 
 	# Add here commands to clean up after the build process.
-	$(MAKE) clean
+	-$(MAKE) clean
+	-$(MAKE) distclean
 
-	dh_clean -posso-systemui-dev
+	dh_clean
 
 install: build
 	dh_testdir
 	dh_testroot
-	dh_clean -k -posso-systemui-dev
+	dh_clean -k
 	dh_installdirs
 
 	# Add here commands to install the package into debian/libconnui-dev.
-	$(MAKE) install DESTDIR=$(CURDIR)/debian/osso-systemui-dev
+	$(MAKE) install DESTDIR=$(CURDIR)/debian/tmp
 
 
 # Build architecture-independent files here.
@@ -69,7 +84,7 @@ binary-arch: build install
 	dh_installchangelogs 
 	dh_installdocs
 	dh_installexamples
-#	dh_install
+	dh_install --sourcedir=debian/tmp -v
 #	dh_installmenu
 #	dh_installdebconf	
 #	dh_installlogrotate
@@ -81,14 +96,14 @@ binary-arch: build install
 #	dh_installinfo
 	dh_installman
 	dh_link
-	dh_strip
+	dh_strip --dbg-package=osso-systemui-dbg
 	dh_compress
 	dh_fixperms
 #	dh_perl
 #	dh_python
-#	dh_makeshlibs
+	dh_makeshlibs
 	dh_installdeb
-#	dh_shlibdeps
+	dh_shlibdeps
 	dh_gencontrol
 	dh_md5sums
 	dh_builddeb

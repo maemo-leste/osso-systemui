@@ -1,0 +1,8 @@
+#! /bin/sh
+
+NAME=systemui
+DAEMON=/usr/bin/systemui
+DSMETOOL=/usr/sbin/dsmetool
+DSMETOOL_PARAMETERS="-n -1 -t"
+
+$DSMETOOL $DSMETOOL_PARAMETERS $DAEMON
