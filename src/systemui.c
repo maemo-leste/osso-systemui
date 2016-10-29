@@ -39,7 +39,7 @@ struct hsl_prio_map prios_map[] =
 };
 
 system_ui_data *app_ui_data = NULL;
-char uint32arg[] = "u";
+guint32 uint32arg = 'u';
 
 void
 systemui_do_callback(system_ui_data *ui, system_ui_callback_t *callback,

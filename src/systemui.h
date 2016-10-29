@@ -40,7 +40,9 @@ typedef struct
   GMainLoop *mainloop;
   DBusConnection *system_bus;
   GtkIconTheme *icontheme;
+  GtkWidget *parent; /* is that supposed to be desktop widget ?!? */
   GHashTable *hsl_tab;
+  int unk2;
 } system_ui_data;
 
 typedef struct
