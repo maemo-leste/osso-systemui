@@ -8,6 +8,8 @@
 #include <osso-log.h>
 #include <systemui.h>
 #include <libintl.h>
+#include <systemui/dbus-names.h>
+#include <errno.h>
 
 #include "dbus.h"
 #include "plugin.h"
@@ -37,6 +39,7 @@ struct hsl_prio_map prios_map[] =
 };
 
 system_ui_data *app_ui_data = NULL;
+char uint32arg[] = "u";
 
 void
 systemui_do_callback(system_ui_data *ui, system_ui_callback_t *callback,
@@ -60,7 +63,9 @@ systemui_do_callback(system_ui_data *ui, system_ui_callback_t *callback,
   }
 
   dbus_message_set_no_reply(msg, TRUE);
-  if (!dbus_message_append_args(msg, DBUS_TYPE_INT32, &argc, NULL))
+  if (!dbus_message_append_args(msg,
+                                DBUS_TYPE_INT32, &argc,
+                                DBUS_TYPE_INVALID))
   {
     SYSTEMUI_CRITICAL("Failed to append parameter to callback");
     dbus_message_unref(msg);
@@ -272,13 +277,13 @@ void daemonize()
   char buf[2 * sizeof(__pid_t)]; /*should be large enough */
 
   if (pid == -1)
-    ULOG_CRIT("daemonize: fork failed: %s", strerror(errno()));
+    ULOG_CRIT("daemonize: fork failed: %s", strerror(errno));
 
   if (pid)
     exit(0);
 
   if (setsid() < 0)
-    ULOG_WARN("setsid failed: %s", strerror(errno()));
+    ULOG_WARN("setsid failed: %s", strerror(errno));
 
   close(STDIN_FILENO);
   close(STDOUT_FILENO);
@@ -351,10 +356,6 @@ static void usage(const char *program)
 void g_log_handler(const gchar *log_domain, GLogLevelFlags log_level,
                    const gchar *message, gpointer user_data)
 {
-  static FILE* fp = NULL;
-
-  if (fp || (fp = fopen("systemui.log", "rw+")))
-    fprintf(fp, "%s\n", message);
 }
 
 int
@@ -420,11 +421,11 @@ main(int argc, char **argv)
     exit(1);
   }
 
-  app_ui_data->requestinterface = "com.nokia.system_ui.request";
-  app_ui_data->signalinterface = "com.nokia.system_ui.signal";
-  app_ui_data->requestpath = "/com/nokia/system_ui/request";
-  app_ui_data->signalpath = "/com/nokia/system_ui/signal";
-  app_ui_data->bus_name = "com.nokia.system_ui";
+  app_ui_data->requestinterface = SYSTEMUI_REQUEST_IF;
+  app_ui_data->signalinterface = SYSTEMUI_SIGNAL_IF;
+  app_ui_data->requestpath = SYSTEMUI_REQUEST_PATH;
+  app_ui_data->signalpath = SYSTEMUI_SIGNAL_PATH;
+  app_ui_data->bus_name = SYSTEMUI_SERVICE;
   app_ui_data->handlers = 0;
 
   build_layers_tab();
@@ -448,9 +449,9 @@ main(int argc, char **argv)
 
     if (app_ui_data->system_bus)
     {
-      DBusMessage *msg = dbus_message_new_signal("/com/nokia/system_ui/signal",
-                                                 "com.nokia.system_ui.signal",
-                                                 "system_ui_started");
+      DBusMessage *msg = dbus_message_new_signal(SYSTEMUI_SIGNAL_PATH,
+                                                 SYSTEMUI_SIGNAL_IF,
+                                                 SYSTEMUI_STARTED_SIG);
       if (msg && dbus_send_message(app_ui_data->system_bus, msg))
       {
         gtk_main();

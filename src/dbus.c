@@ -31,7 +31,7 @@ dbus_send_message(DBusConnection *dbus, DBusMessage *msg)
 
   dbus_message_set_no_reply(msg, TRUE);
 
-  if (!dbus_connection_send(dbus, msg, 0))
+  if (!dbus_connection_send(dbus, msg, NULL))
   {
     SYSTEMUI_CRITICAL("Failed to send dbus message");
     goto err;
@@ -131,7 +131,6 @@ dbus_req_handler(DBusConnection *connection, DBusMessage *msg, void *user_data)
   const gchar *method;
   DBusMessageIter iter;
   system_ui_handler_arg value;
-  char *message;
   int i;
 
   dest = dbus_message_get_destination(msg);
@@ -162,7 +161,7 @@ dbus_req_handler(DBusConnection *connection, DBusMessage *msg, void *user_data)
           arg.arg_type = dbus_message_iter_get_arg_type(&iter);
           dbus_message_iter_get_basic(&iter, &arg.data);
 
-          if ( arg.arg_type == DBUS_TYPE_STRING )
+          if (arg.arg_type == DBUS_TYPE_STRING)
             arg.data.str = g_strdup(arg.data.str);
 
           g_array_append_vals(args, &arg, 1);
@@ -193,13 +192,13 @@ dbus_req_handler(DBusConnection *connection, DBusMessage *msg, void *user_data)
 
       for (i = 0; i < args->len; i++)
       {
-        system_ui_handler_arg *arg = (system_ui_handler_arg *)&args->data[i];
+        system_ui_handler_arg *arg = &((system_ui_handler_arg*)args->data)[i];
 
         if (arg->arg_type == DBUS_TYPE_STRING)
           g_free(arg->data.str);
       }
 
-      g_array_free(args, 1);
+      g_array_free(args, TRUE);
 
       if (!noreply)
       {
@@ -217,7 +216,7 @@ dbus_req_handler(DBusConnection *connection, DBusMessage *msg, void *user_data)
         }
         else
         {
-          reply = dbus_message_new_error(msg,DBUS_ERROR_INVALID_ARGS,
+          reply = dbus_message_new_error(msg, DBUS_ERROR_INVALID_ARGS,
                                          DBUS_ERROR_INVALID_ARGS);
         }
 
@@ -275,6 +274,7 @@ dbus_req_handler(DBusConnection *connection, DBusMessage *msg, void *user_data)
           gchar *reason = NULL;
           gchar *ok_msg = "";
           guint32 style = 0;
+          char *message;
 
           dbus_message_get_args(msg, NULL,
                                 DBUS_TYPE_STRING, &action,
@@ -366,12 +366,12 @@ dbus_init(system_ui_data *ui)
         SYSTEMUI_WARNING("Failed to connect to session bus: %s, %s, retry",
                          error.name, error.message);
         dbus_error_free(&error);
-      }
 
-      if (!--retry)
-      {
-        SYSTEMUI_ERROR("Failed to open connection to session bus, give up");
-        return FALSE;
+        if (!--retry)
+        {
+          SYSTEMUI_ERROR("Failed to open connection to session bus, give up");
+          return FALSE;
+        }
       }
     }
   }

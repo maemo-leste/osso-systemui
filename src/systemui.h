@@ -95,10 +95,10 @@ extern gboolean WindowPriority_HideWindow(GtkWidget *);
 extern gboolean WindowPriority_ShowWindow(GtkWidget *, unsigned int priority);
 
 typedef int (*system_ui_handler)(const char *interface,
-                                   const char *method,
-                                   GArray *args /* array of system_ui_callback_arg */,
-                                   system_ui_data *ui,
-                                   system_ui_handler_arg *result);
+                                 const char *method,
+                                 GArray *args /* array of system_ui_callback_arg */,
+                                 system_ui_data *ui,
+                                 system_ui_handler_arg *result);
 
 extern gboolean
 systemui_check_plugin_arguments(GArray *args, int *supportedargs, guint argc);

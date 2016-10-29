@@ -54,7 +54,7 @@ ipm_show_window(GtkWidget *widget, unsigned int priority)
                            (GCompareFunc)window_priority_compare))
   {
     GdkDisplay *dpy = gdk_display_get_default();
-    guint32 layer;
+    gpointer layer;
 
     wp->priority = priority;
     wp->widget = widget;
@@ -62,7 +62,7 @@ ipm_show_window(GtkWidget *widget, unsigned int priority)
 
     g_assert(app_ui_data->hsl_tab != NULL);
 
-    layer = (guint32)g_hash_table_lookup(app_ui_data->hsl_tab, &priority);
+    layer = g_hash_table_lookup(app_ui_data->hsl_tab, &priority);
     if (layer)
     {
       Atom hsl_atom =
@@ -72,7 +72,7 @@ ipm_show_window(GtkWidget *widget, unsigned int priority)
       XChangeProperty(gdk_x11_display_get_xdisplay(dpy),
                       gdk_x11_drawable_get_xid(widget->window), hsl_atom,
                       XA_CARDINAL, 32, PropModeReplace,
-                      (unsigned char *)&layer, 1);
+                      (unsigned char *)layer, 1);
     }
 
     window_priority_list = g_slist_insert_sorted(window_priority_list, wp,

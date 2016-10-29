@@ -5,6 +5,7 @@
 #include <dirent.h>
 #include <string.h>
 #include <systemui.h>
+#include <errno.h>
 
 GSList *plugin_list;
 
@@ -50,7 +51,6 @@ plugin_load(plugin_t *plugin, gboolean *previous_ok)
       goto err;
   }
 
-  *previous_ok = TRUE;
   plugin->state = LOADED;
 
   return;
@@ -132,7 +132,7 @@ init_plugins(system_ui_data *app_ui_data)
 
     if (!dir)
     {
-      ULOG_INFO("plugin directory opendir failed with %s", strerror(errno()));
+      ULOG_INFO("plugin directory opendir failed with %s", strerror(errno));
       goto EXIT;
     }
 
