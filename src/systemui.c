@@ -431,7 +431,9 @@ main(int argc, char **argv)
   build_layers_tab();
 
   gtk_init(&argc, &argv);
+#ifdef HAVE_G_THREAD_INIT
   g_thread_init(0);
+#endif
   app_ui_data->icontheme = gtk_icon_theme_get_default();
   app_ui_data->gc_client = gconf_client_get_default();
 

@@ -17,13 +17,27 @@ AC_HEADER_STDC
 AC_DISABLE_STATIC
 AC_PROG_LIBTOOL
 
-PKG_CHECK_MODULES(HILDON, hildon-1)
+PKG_CHECK_MODULES([HILDON], [hildon-1],
+    [AC_DEFINE(WITH_HILDON,[1],[Use Hildon])],
+    [PKG_CHECK_MODULES(HILDON, gtk+-3.0, [AC_DEFINE(WITH_GTK3,[1],[Use Gtk3])])])
+
 PKG_CHECK_MODULES(OSSO, libosso)
 PKG_CHECK_MODULES(GCONF, gconf-2.0)
 PKG_CHECK_MODULES(DBUS, dbus-1)
 PKG_CHECK_MODULES(X11, x11)
 PKG_CHECK_MODULES(OSSO_SYSTEMUI_DBUS, osso-systemui-dbus)
 PKG_CHECK_MODULES(DBUS_GLIB, dbus-glib-1)
+PKG_CHECK_MODULES(CANBERRA, libcanberra)
+
+OLD_CFLAGS=$CFLAGS
+CFLAGS="$CFLAGS $DBUS_CFLAGS"
+AC_CHECK_TYPES([DBusBasicValue],,,[[#include <dbus/dbus.h>]])
+
+CFLAGS="$OLD_CFLAGS $HILDON_CFLAGS -Werror"
+AC_COMPILE_IFELSE(
+    [AC_LANG_PROGRAM([[#include <glib.h>]], [[g_thread_init();]])],
+    [AC_DEFINE([HAVE_G_THREAD_INIT],[],["g_thread_init() is deprecated"])], [])
+CFLAGS=$OLD_CFLAGS
 
 AC_ARG_ENABLE(cast-checks,  [  --disable-cast-checks   compile with GLIB cast checks disabled],[cchecks=${enableval}],cchecks=yes)
 if test "x$cchecks" = "xno"; then

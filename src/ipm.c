@@ -3,6 +3,8 @@
 #include <gdk/gdkx.h>
 #include <systemui.h>
 
+#include "config.h"
+
 struct window_priority
 {
   guint32 priority;
@@ -70,7 +72,13 @@ ipm_show_window(GtkWidget *widget, unsigned int priority)
                                                 "_HILDON_STACKING_LAYER");
 
       XChangeProperty(gdk_x11_display_get_xdisplay(dpy),
+
+#ifdef WITH_GTK3
+                      gdk_x11_window_get_xid(gtk_widget_get_window(widget)),
+                      hsl_atom,
+#else
                       gdk_x11_drawable_get_xid(widget->window), hsl_atom,
+#endif
                       XA_CARDINAL, 32, PropModeReplace,
                       (unsigned char *)layer, 1);
     }
@@ -105,7 +113,11 @@ ipm_hide_window(GtkWidget *widget)
     g_free(l->data);
 
   window_priority_list = g_slist_delete_link(window_priority_list, l);
+#ifdef WITH_GTK3
+  gtk_widget_hide(widget);
+#else
   gtk_widget_hide_all(widget);
+#endif
 
 #if 0 /* Why is that? */
   g_slist_length(window_priority_list);

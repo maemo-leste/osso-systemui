@@ -2,7 +2,9 @@
 #include <libintl.h>
 #include <canberra.h>
 #include <mce/dbus-names.h>
+#ifdef WITH_HILDON
 #include <hildon/hildon-banner.h>
+#endif
 #include <systemui/dbus-names.h>
 #include <osso-log.h>
 #include <systemui.h>
@@ -11,6 +13,7 @@
 #include <dbus/dbus-glib-lowlevel.h>
 
 #include "dbus.h"
+#include "config.h"
 
 /* Those are supposed to be in some osso-locale.h file, can't find it */
 #define LOCALE_CHANGED_INTERFACE "com.nokia.LocaleChangeNotification"
@@ -71,8 +74,9 @@ handle_thermal_notification(system_ui_data *ui, const char *state)
     DBusMessage *msg;
     ca_context *c = 0;
     int ca_error;
+#ifdef WITH_HILDON
     GtkWidget *banner;
-
+#endif
     dbus_send_message(ui->system_bus,
                       dbus_message_new_method_call(MCE_SERVICE,
                                                    MCE_REQUEST_PATH,
@@ -104,7 +108,7 @@ handle_thermal_notification(system_ui_data *ui, const char *state)
     if (ca_error)
       SYSTEMUI_ERROR("Failed to play sound (%d, %s)", ca_error,
                      ca_strerror(ca_error));
-
+#ifdef WITH_HILDON
     banner =
         hildon_banner_show_information(NULL, NULL,
                                        dgettext("osso-powerup-shutdown",
@@ -112,6 +116,7 @@ handle_thermal_notification(system_ui_data *ui, const char *state)
     hildon_banner_set_timeout(HILDON_BANNER(banner), 9000);
     gtk_widget_show_all(banner);
     WindowPriority_ShowWindow(banner, 300u);
+#endif
     thermal_shutdown_started = TRUE;
   }
 }
