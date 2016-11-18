@@ -29,13 +29,6 @@ PKG_CHECK_MODULES(OSSO_SYSTEMUI_DBUS, osso-systemui-dbus)
 PKG_CHECK_MODULES(DBUS_GLIB, dbus-glib-1)
 PKG_CHECK_MODULES(CANBERRA, libcanberra)
 
-OLD_CFLAGS=$CFLAGS
-CFLAGS="$OLD_CFLAGS $HILDON_CFLAGS -Werror"
-AC_COMPILE_IFELSE(
-    [AC_LANG_PROGRAM([[#include <glib.h>]], [[g_thread_init();]])],
-    [AC_DEFINE([HAVE_G_THREAD_INIT],[],["g_thread_init() is deprecated"])], [])
-CFLAGS=$OLD_CFLAGS
-
 AC_ARG_ENABLE(cast-checks,  [  --disable-cast-checks   compile with GLIB cast checks disabled],[cchecks=${enableval}],cchecks=yes)
 if test "x$cchecks" = "xno"; then
     CFLAGS="$CFLAGS -DG_DISABLE_CAST_CHECKS"
