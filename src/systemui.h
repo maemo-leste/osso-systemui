@@ -27,8 +27,6 @@
 #include <gconf/gconf-client.h>
 #include <syslog.h>
 
-#include "config.h"
-
 typedef struct
 {
   GTree *handlers;
@@ -47,7 +45,7 @@ typedef struct
   int unk2;
 } system_ui_data;
 
-#ifndef HAVE_DBUSBASICVALUE
+#if DBUS_VERSION < ((1 << 16) | (6 << 8))
 typedef struct
 {
   dbus_uint32_t first32;

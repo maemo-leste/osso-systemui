@@ -30,9 +30,6 @@ PKG_CHECK_MODULES(DBUS_GLIB, dbus-glib-1)
 PKG_CHECK_MODULES(CANBERRA, libcanberra)
 
 OLD_CFLAGS=$CFLAGS
-CFLAGS="$CFLAGS $DBUS_CFLAGS"
-AC_CHECK_TYPES([DBusBasicValue],,,[[#include <dbus/dbus.h>]])
-
 CFLAGS="$OLD_CFLAGS $HILDON_CFLAGS -Werror"
 AC_COMPILE_IFELSE(
     [AC_LANG_PROGRAM([[#include <glib.h>]], [[g_thread_init();]])],
