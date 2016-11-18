@@ -1,7 +1,7 @@
 Source: osso-systemui
 Priority: optional
 Maintainer: Ivaylo Dimitrov <freemangordon@abv.bg>
-Build-Depends: debhelper (>> 3.0.0), autotools-dev, libhildon1-dev, libgconf2-dev, osso-systemui-dbus-dev, libosso-dev, libx11-dev, libdbus-1-dev, libdbus-glib-1-dev
+Build-Depends: debhelper (>> 3.0.0), autotools-dev, libhildon1-dev, libgconf2-dev, osso-systemui-dbus-dev, libosso-dev, libx11-dev, libdbus-1-dev, libdbus-glib-1-dev, libcanberra-dev
 Standards-Version: 3.7.2
 Section: libs
 
