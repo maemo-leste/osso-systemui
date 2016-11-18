@@ -2,9 +2,6 @@
 #include <libintl.h>
 #include <canberra.h>
 #include <mce/dbus-names.h>
-#ifdef WITH_HILDON
-#include <hildon/hildon-banner.h>
-#endif
 #include <systemui/dbus-names.h>
 #include <osso-log.h>
 #include <systemui.h>
@@ -12,8 +9,13 @@
 #include <unistd.h>
 #include <dbus/dbus-glib-lowlevel.h>
 
-#include "dbus.h"
 #include "config.h"
+
+#ifdef WITH_HILDON
+#include <hildon/hildon-banner.h>
+#endif
+
+#include "dbus.h"
 
 /* Those are supposed to be in some osso-locale.h file, can't find it */
 #define LOCALE_CHANGED_INTERFACE "com.nokia.LocaleChangeNotification"
