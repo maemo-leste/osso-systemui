@@ -22,5 +22,5 @@ Description: Header files for System UI
 Package: osso-systemui-dbg
 Section: devel
 Architecture: any
-Depends:  osso-systemui (=${Source-Version})
+Depends:  osso-systemui (=${source:Version})
 Description: Debug symbols for osso-systemui

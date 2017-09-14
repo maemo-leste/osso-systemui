@@ -1,5 +1,11 @@
 osso-systemui (0.2.0.19) unstable; urgency=low
 
+  * enable git builds
+
+ -- Ivan J. <parazyd@dyne.org>  Thu, 14 Sep 2017 21:10:00 +0200
+
+osso-systemui (0.2.0.19) unstable; urgency=low
+
   * Initial RE version.
 
  -- Ivaylo Dimitrov <freemangordon@abv.bg>  Thu, 27 Oct 2016 17:29:31 +0200
