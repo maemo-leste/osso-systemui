@@ -126,205 +126,188 @@ handle_thermal_notification(system_ui_data *ui, const char *state)
 static DBusHandlerResult
 dbus_req_handler(DBusConnection *connection, DBusMessage *msg, void *user_data)
 {
-  system_ui_data *ui = (system_ui_data *)user_data;
-  const gchar *dest;
-  const gchar *sender;
-  int msg_type;
-  GArray *args;
-  system_ui_handler handler;
-  int type;
-  dbus_bool_t noreply;
-  const gchar *iface;
-  const gchar *method;
-  DBusMessageIter iter;
-  system_ui_handler_arg value;
-  int i;
+  system_ui_data *ui = user_data;
+  const gchar *dest = dbus_message_get_destination(msg);
+  const gchar *iface = dbus_message_get_interface(msg);
+  const gchar *method = dbus_message_get_member(msg);
+  const gchar *sender = dbus_message_get_sender(msg);
+  int msg_type = dbus_message_get_type(msg);
 
-  dest = dbus_message_get_destination(msg);
-  iface = dbus_message_get_interface(msg);
-  method = dbus_message_get_member(msg);
-  sender = dbus_message_get_sender(msg);
-  msg_type = dbus_message_get_type(msg);
+  if (!sender || !iface || !method)
+    return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 
-  if (!msg_type || !sender || !iface || !method)
-    goto EXIT;
-
-  if (msg_type == DBUS_MESSAGE_TYPE_METHOD_CALL)
+  if (msg_type == DBUS_MESSAGE_TYPE_METHOD_CALL && dest &&
+      !strcmp(dest, ui->bus_name))
   {
-    if (!strcmp(dest, ui->bus_name))
+    GArray *args = g_array_new(FALSE, FALSE, sizeof(system_ui_handler_arg));
+    int type = 'm';
+    DBusMessageIter iter;
+    system_ui_handler_arg value;
+
+    ULOG_INFO("Method call received from: %s, iface: %s, method: %s", sender,
+              iface, method);
+
+    if (dbus_message_iter_init(msg, &iter))
     {
-      ULOG_INFO("Method call received from: %s, iface: %s, method: %s", sender,
-                iface, method);
-
-      noreply = dbus_message_get_no_reply(msg);
-      args = g_array_new(0, 0, sizeof(system_ui_handler_arg));
-
-      if (dbus_message_iter_init(msg, &iter))
+      while (1)
       {
-        while (1)
-        {
-          system_ui_handler_arg arg;
+        system_ui_handler_arg arg;
 
-          arg.arg_type = dbus_message_iter_get_arg_type(&iter);
-          dbus_message_iter_get_basic(&iter, &arg.data);
+        arg.arg_type = dbus_message_iter_get_arg_type(&iter);
+        dbus_message_iter_get_basic(&iter, &arg.data);
 
-          if (arg.arg_type == DBUS_TYPE_STRING)
-            arg.data.str = g_strdup(arg.data.str);
+        if (arg.arg_type == DBUS_TYPE_STRING)
+          arg.data.str = g_strdup(arg.data.str);
 
-          g_array_append_vals(args, &arg, 1);
+        g_array_append_vals(args, &arg, 1);
 
-          if (!dbus_message_iter_has_next(&iter))
-            break;
+        if (!dbus_message_iter_has_next(&iter))
+          break;
 
-          dbus_message_iter_next(&iter);
-        }
+        dbus_message_iter_next(&iter);
       }
+    }
 
-      if (g_ascii_strcasecmp(iface, ui->requestinterface))
+    if (!g_ascii_strcasecmp(iface, ui->requestinterface))
+    {
+      system_ui_handler handler = g_tree_lookup(ui->handlers, method);
+
+      if (handler)
+        type = handler(iface, method, args, ui, &value);
+      else
+        SYSTEMUI_INFO("Unknown method call message");
+    }
+    else
+      SYSTEMUI_INFO("Invalid interface");
+
+    for (int i = 0; i < args->len; i++)
+    {
+      system_ui_handler_arg *arg = &((system_ui_handler_arg *)args->data)[i];
+
+      if (arg->arg_type == DBUS_TYPE_STRING)
+        g_free(arg->data.str);
+    }
+
+    g_array_free(args, TRUE);
+
+    if (dbus_message_get_no_reply(msg) == FALSE)
+    {
+      DBusMessage *reply;
+
+      if (type)
       {
-        SYSTEMUI_INFO("Invalid interface");
-        type = 'm';
+        if (type == 'm')
+        {
+          reply = dbus_message_new_error(msg, DBUS_ERROR_UNKNOWN_METHOD,
+                                         "No such method");
+        }
+        else
+          reply = dbus_message_new_method_return(msg);
       }
       else
       {
-        handler = (system_ui_handler)g_tree_lookup(ui->handlers, method);
-        if (handler)
-          type = handler(iface, method, args, ui, &value);
-        else
-        {
-          SYSTEMUI_INFO("Unknown method call message");
-          type = 'm';
-        }
+        reply = dbus_message_new_error(msg, DBUS_ERROR_INVALID_ARGS,
+                                       DBUS_ERROR_INVALID_ARGS);
       }
 
-      for (i = 0; i < args->len; i++)
+      if (reply)
       {
-        system_ui_handler_arg *arg = &((system_ui_handler_arg*)args->data)[i];
+        dbus_message_iter_init_append(reply, &iter);
 
-        if (arg->arg_type == DBUS_TYPE_STRING)
-          g_free(arg->data.str);
+        if (type == DBUS_TYPE_VARIANT)
+        {
+          dbus_int32_t i = 0;
+
+          dbus_message_iter_append_basic(&iter, DBUS_TYPE_INT32, &i);
+        }
+        else if (type && type != 'm')
+          dbus_message_iter_append_basic(&iter, type, &value.data);
+
+        dbus_send_message(connection, reply);
       }
-
-      g_array_free(args, TRUE);
-
-      if (!noreply)
-      {
-        DBusMessage *reply;
-
-        if (type)
-        {
-          if (type == 'm')
-          {
-            reply = dbus_message_new_error(msg, DBUS_ERROR_UNKNOWN_METHOD,
-                                           "No such method");
-          }
-          else
-            reply = dbus_message_new_method_return(msg);
-        }
-        else
-        {
-          reply = dbus_message_new_error(msg, DBUS_ERROR_INVALID_ARGS,
-                                         DBUS_ERROR_INVALID_ARGS);
-        }
-
-        if (reply)
-        {
-          dbus_message_iter_init_append(reply, &iter);
-
-          if (type == DBUS_TYPE_VARIANT)
-          {
-            i = 0;
-            dbus_message_iter_append_basic(&iter, DBUS_TYPE_INT32, &i);
-          }
-          else if (type && type != 'm')
-            dbus_message_iter_append_basic(&iter, type, &value.data);
-
-          dbus_send_message(connection, reply);
-        }
-      }
+      else
+        return DBUS_HANDLER_RESULT_NEED_MEMORY;
     }
-  }
-  else
-  {
-    if (msg_type == DBUS_MESSAGE_TYPE_SIGNAL)
-    {
 
-      if (!strcmp(iface, LOCALE_CHANGED_INTERFACE) &&
-          !strcmp(method, LOCALE_CHANGED_SIG_NAME))
+    return DBUS_HANDLER_RESULT_HANDLED;
+  }
+  else if (msg_type == DBUS_MESSAGE_TYPE_SIGNAL)
+  {
+
+    if (!strcmp(iface, LOCALE_CHANGED_INTERFACE) &&
+        !strcmp(method, LOCALE_CHANGED_SIG_NAME))
+    {
+      gchar *locale = NULL;
+
+      dbus_message_get_args(msg, NULL,
+                            DBUS_TYPE_STRING, &locale,
+                            DBUS_TYPE_INVALID);
+      ULOG_INFO("New locale: %s", locale);
+
+      if (locale)
+        setlocale(LC_MESSAGES, locale);
+
+    }
+    else if(!strcmp(iface, "com.nokia.thermalmanager") &&
+            !strcmp(method, "thermal_state_change_ind"))
+    {
+      gchar *state = NULL;
+
+      dbus_message_get_args(msg, NULL,
+                            DBUS_TYPE_STRING, &state,
+                            DBUS_TYPE_INVALID);
+      handle_thermal_notification(ui, state);
+    }
+    else if(!strcmp(iface, "com.nokia.dsme.signal"))
+    {
+      if(!strcmp(method, "denied_req_ind"))
       {
-        gchar *locale = NULL;
+        gchar *action = NULL;
+        gchar *reason = NULL;
+        gchar *ok_msg = "";
+        guint32 style = 0;
+        char *message;
 
         dbus_message_get_args(msg, NULL,
-                              DBUS_TYPE_STRING, &locale,
+                              DBUS_TYPE_STRING, &action,
+                              DBUS_TYPE_STRING, &reason,
                               DBUS_TYPE_INVALID);
-        ULOG_INFO("New locale: %s", locale);
 
-        if (locale)
-          setlocale(LC_MESSAGES, locale);
+        ULOG_INFO("Got DSME denied_req_ind signal, action='%s', reason='%s'",
+                  action, reason);
 
-      }
-      else if(!strcmp(iface, "com.nokia.thermalmanager") &&
-              !strcmp(method, "thermal_state_change_ind"))
-      {
-          gchar *state = 0;
+        message = dgettext("osso-powerup-shutdown",
+                           "powerup_in_do_not_switch_off");
 
-          dbus_message_get_args(msg, NULL,
-                                DBUS_TYPE_STRING, &state,
-                                DBUS_TYPE_INVALID);
-          handle_thermal_notification(ui, state);
-      }
-      else if(!strcmp(iface, "com.nokia.dsme.signal"))
-      {
-        if(!strcmp(method, "denied_req_ind"))
+        msg = dbus_message_new_method_call("org.freedesktop.Notifications",
+                                           "/org/freedesktop/Notifications",
+                                           "org.freedesktop.Notifications",
+                                           "SystemNoteDialog");
+
+        if (msg)
         {
-          gchar *action = NULL;
-          gchar *reason = NULL;
-          gchar *ok_msg = "";
-          guint32 style = 0;
-          char *message;
-
-          dbus_message_get_args(msg, NULL,
-                                DBUS_TYPE_STRING, &action,
-                                DBUS_TYPE_STRING, &reason,
-                                DBUS_TYPE_INVALID);
-
-          ULOG_INFO("Got DSME denied_req_ind signal, action='%s', reason='%s'",
-                    action, reason);
-
-          message = dgettext("osso-powerup-shutdown",
-                             "powerup_in_do_not_switch_off");
-
-          msg = dbus_message_new_method_call("org.freedesktop.Notifications",
-                                             "/org/freedesktop/Notifications",
-                                             "org.freedesktop.Notifications",
-                                             "SystemNoteDialog");
-
-          if (msg)
+          if (dbus_message_append_args(msg,
+                                       DBUS_TYPE_STRING, &message,
+                                       DBUS_TYPE_UINT32, &style,
+                                       DBUS_TYPE_STRING, &ok_msg,
+                                       DBUS_TYPE_INVALID))
           {
-            if (dbus_message_append_args(msg,
-                                         DBUS_TYPE_STRING, &message,
-                                         DBUS_TYPE_UINT32, &style,
-                                         DBUS_TYPE_STRING, &ok_msg,
-                                         DBUS_TYPE_INVALID))
-            {
-              dbus_send_message(session_bus, msg);
-            }
-            else
-              SYSTEMUI_ERROR("Unable to add parameters to dbus call");
+            dbus_send_message(session_bus, msg);
           }
           else
-            SYSTEMUI_CRITICAL("Unable to create dbus message to SystemNoteDialog");
+            SYSTEMUI_ERROR("Unable to add parameters to dbus call");
         }
-        else if(!strcmp(method, "shutdown_ind"))
-        {
-                ULOG_INFO("systemui: shutdown_ind from DSME, quitting");
-                gtk_main_quit();
-        }
+        else
+          SYSTEMUI_CRITICAL("Unable to create dbus message to SystemNoteDialog");
+      }
+      else if(!strcmp(method, "shutdown_ind"))
+      {
+        ULOG_INFO("systemui: shutdown_ind from DSME, quitting");
+        gtk_main_quit();
       }
     }
   }
 
-EXIT:
   return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 }
 
