@@ -116,9 +116,10 @@ check_set_callback(GArray *args, system_ui_callback_t *callback);
 
 extern void
 systemui_do_callback(system_ui_data *data, system_ui_callback_t *callback,
-                     guint argc);
+                     dbus_int32_t ret_val);
 extern void
-do_callback(system_ui_data *ui, system_ui_callback_t *callback, guint argc);
+do_callback(system_ui_data *ui, system_ui_callback_t *callback,
+            dbus_int32_t ret_val);
 
 extern void
 systemui_free_callback(system_ui_callback_t *callback);

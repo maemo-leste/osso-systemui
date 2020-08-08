@@ -43,7 +43,7 @@ guint32 uint32arg = 'u';
 
 void
 systemui_do_callback(system_ui_data *ui, system_ui_callback_t *callback,
-                     guint argc)
+                     dbus_int32_t ret_val)
 {
   DBusMessage *msg;
 
@@ -64,7 +64,7 @@ systemui_do_callback(system_ui_data *ui, system_ui_callback_t *callback,
 
   dbus_message_set_no_reply(msg, TRUE);
   if (!dbus_message_append_args(msg,
-                                DBUS_TYPE_INT32, &argc,
+                                DBUS_TYPE_INT32, &ret_val,
                                 DBUS_TYPE_INVALID))
   {
     SYSTEMUI_CRITICAL("Failed to append parameter to callback");
@@ -75,9 +75,10 @@ systemui_do_callback(system_ui_data *ui, system_ui_callback_t *callback,
 }
 
 void
-do_callback(system_ui_data *ui, system_ui_callback_t *callback, guint argc)
+do_callback(system_ui_data *ui, system_ui_callback_t *callback,
+            dbus_int32_t ret_val)
 {
-  systemui_do_callback(ui, callback, argc);
+  systemui_do_callback(ui, callback, ret_val);
 }
 
 void
