@@ -1,3 +1,9 @@
+osso-systemui (0.2.0.20) unstable; urgency=low
+
+  * Do not send 2 replies per method call
+
+ -- Ivaylo Dimitrov <freemangordon@abv.bg>  Sat, 08 Aug 2020 14:36:56 +0300
+
 osso-systemui (0.2.0.19) unstable; urgency=low
 
   * enable git builds
