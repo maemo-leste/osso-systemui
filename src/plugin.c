@@ -109,7 +109,7 @@ init_plugins(system_ui_data *app_ui_data)
   ULOG_INFO("Loading all plugins");
 
   prefix = gconf_client_get_string(app_ui_data->gc_client,
-                                   "/system/systemui/pluginprefix", NULL);
+                                   SYSTEMUI_GCONF_PLUGIN_PREFIX, NULL);
   if (!prefix)
   {
     ULOG_INFO("GConf key for plugin prefix not found, using default prefix");
@@ -117,7 +117,7 @@ init_plugins(system_ui_data *app_ui_data)
   }
 
   path = gconf_client_get_string(app_ui_data->gc_client,
-                                 "/system/systemui/pluginpath", NULL);
+                                 SYSTEMUI_GCONF_PLUGIN_PATH, NULL);
   if (!path)
   {
     ULOG_INFO("GConf key for plugin path not found, using default path");

@@ -440,7 +440,7 @@ main(int argc, char **argv)
 
   g_return_val_if_fail(app_ui_data->gc_client, 1);
 
-  gconf_client_add_dir(app_ui_data->gc_client, "/system/systemui/",
+  gconf_client_add_dir(app_ui_data->gc_client, SYSTEMUI_GCONF_DIR,
                        GCONF_CLIENT_PRELOAD_NONE, NULL);
 
   g_return_val_if_fail(dbus_init(app_ui_data), 1);
@@ -466,7 +466,7 @@ main(int argc, char **argv)
   }
 
   dbus_finish(app_ui_data);
-  gconf_client_remove_dir(app_ui_data->gc_client, "/system/systemui/", NULL);
+  gconf_client_remove_dir(app_ui_data->gc_client, SYSTEMUI_GCONF_DIR, NULL);
   g_object_unref(app_ui_data->gc_client);
 
   app_ui_data->gc_client = NULL;

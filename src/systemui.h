@@ -27,6 +27,10 @@
 #include <gconf/gconf-client.h>
 #include <syslog.h>
 
+#define SYSTEMUI_GCONF_DIR "/system/systemui/"
+#define SYSTEMUI_GCONF_PLUGIN_PREFIX SYSTEMUI_GCONF_DIR "pluginprefix"
+#define SYSTEMUI_GCONF_PLUGIN_PATH SYSTEMUI_GCONF_DIR "pluginpath"
+
 typedef struct
 {
   GTree *handlers;
