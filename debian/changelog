@@ -1,3 +1,9 @@
+osso-systemui (0.2.0.22) unstable; urgency=low
+
+  * Fix a memory leak
+
+ -- Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>  Sun, 23 May 2021 18:43:41 +0300
+
 osso-systemui (0.2.0.21) unstable; urgency=low
 
   * -dev: Create defines for gconf paths
