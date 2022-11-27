@@ -1,6 +1,6 @@
 Source: osso-systemui
 Priority: optional
-Maintainer: Ivaylo Dimitrov <freemangordon@abv.bg>
+Maintainer: Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>
 Build-Depends: debhelper (>> 3.0.0), autotools-dev, libhildon1-dev, libgconf2-dev, osso-systemui-dbus-dev, libosso-dev, libx11-dev, libdbus-1-dev, libdbus-glib-1-dev, libcanberra-dev, autoconf, automake, libtool, mce-dev
 Standards-Version: 3.7.2
 Section: libs
@@ -18,9 +18,3 @@ Section: devel
 Architecture: any
 Depends:  libdbus-1-dev, libgtk2.0-dev
 Description: Header files for System UI
-
-Package: osso-systemui-dbg
-Section: devel
-Architecture: any
-Depends:  osso-systemui (=${source:Version})
-Description: Debug symbols for osso-systemui
