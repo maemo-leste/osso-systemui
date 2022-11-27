@@ -1,3 +1,10 @@
+osso-systemui (0.2.1) unstable; urgency=low
+
+  * fix build in chimaera
+  * port to debhelper 10
+
+ -- Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>  Sun, 27 Nov 2022 09:34:33 +0200
+
 osso-systemui (0.2.0.22) unstable; urgency=low
 
   * Fix a memory leak
