@@ -290,10 +290,24 @@ void daemonize()
   close(STDOUT_FILENO);
 
   fd = open("/dev/null", O_RDWR);
-  dup(fd);
-  dup(fd);
 
-  chdir("/tmp");
+  if (dup(fd) == -1)
+  {
+    ULOG_ERR("Cannot redirect STDIN to /dev/null [%d]. Exiting.", errno);
+    exit(1);
+  }
+
+  if (dup(fd) == -1)
+  {
+    ULOG_ERR("Cannot redirect STDOUT to /dev/null [%d]. Exiting.", errno);
+    exit(1);
+  }
+
+  if (chdir("/tmp") == -1)
+  {
+    ULOG_ERR("Cannot chdir to /tmp [%d]. Exiting.", errno);
+    exit(1);
+  }
 
   fd = open("/var/run/systemui.pid", O_CREAT | O_RDWR, 0640);
 
@@ -310,7 +324,12 @@ void daemonize()
   }
 
   sprintf(buf, "%d\n", getpid());
-  write(fd, buf, strlen(buf));
+
+  if (write(fd, buf, strlen(buf)) != strlen(buf))
+  {
+    ULOG_ERR("Cannot write PID file [%d]. Exiting.", errno);
+    exit(1);
+  }
 
   signal(SIGTSTP, SIG_IGN);
   signal(SIGTTIN, SIG_IGN);
